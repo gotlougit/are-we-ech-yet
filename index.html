@@ -1,16 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Are We ECH Yet?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        #domainInput {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 200px;
+        }
+
+        #result {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Are We ECH Yet?</h1>
     <p>Enter a domain name to check:</p>
-    <input type="text" id="domainInput">
+    <input type="text" id="domainInput" onkeypress="handleKeyPress(event)">
     <button onclick="checkDomain()">Check</button>
     <p id="result"></p>
     <p>If you want to check, the best way to do so is with this command line oneliner on *nix based operating systems</p>
-    <p>dig <domain-name> HTTPS +short | grep ech</p>
+    <p>dig &lt;domain-name&gt; HTTPS +short | grep ech</p>
     <p>If it finds something, then the website supports ECH. If not, it doesn't</p>
     <script>
         function checkDomain() {
@@ -45,6 +90,12 @@
                 .catch(error => {
                     console.error("Error loading the file:", error);
                 });
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                checkDomain();
+            }
         }
     </script>
 </body>
