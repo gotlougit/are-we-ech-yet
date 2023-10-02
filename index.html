@@ -49,55 +49,88 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        /* Styling for the collapsible explanation */
+        .collapsible {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .collapsible:hover {
+            background-color: #0056b3;
+        }
+
+        .content {
+            display: none;
+            padding: 20px;
+            text-align: left;
+        }
+
+        /* Add an icon to the collapsible heading */
+        .collapsible::before {
+            content: '\25B6'; /* Unicode chevron right symbol */
+            font-size: 18px;
+            float: right;
+        }
     </style>
 </head>
 <body>
     <div id="mainstuff">
-    <h1>Are We ECH Yet?</h1>
-    <p>Enter a domain name to check:</p>
-    <input type="text" id="domainInput" onkeypress="handleKeyPress(event)">
-    <button onclick="checkDomain()">Check</button>
-    <noscript>This won't work without JavaScript</noscript>
-    <p id="result"></p>
-    <p>If you want to check, the best way to do so is with this command line oneliner on *nix based operating systems</p>
-    <p>dig &lt;domain-name&gt; HTTPS +short | grep ech</p>
-    <p>If it finds something, then the website supports ECH. If not, it doesn't</p>
+        <h1>Are We ECH Yet?</h1>
+        <p>Enter a domain name to check:</p>
+        <input type="text" id="domainInput" onkeypress="handleKeyPress(event)">
+        <button onclick="checkDomain()">Check</button>
+        <noscript>This won't work without JavaScript</noscript>
+        <p id="result"></p>
+        <p>If you want to check, the best way to do so is with this command line oneliner on *nix based operating systems</p>
+        <p>dig &lt;domain-name&gt; HTTPS +short | grep ech</p>
+        <p>If it finds something, then the website supports ECH. If not, it doesn't</p>
     </div>
     <h2>Stats</h2>
     <p id="stats"></p>
-    <h2>What is ECH, and why is it important?</h2>
-    <p>Disclaimer: some of this is simplified for brevity</p>
-    
-    <p>ECH, short for Encrypted Client Hello, is an extension to TLS 1.3, the latest
-    encryption protocol that helps secure HTTPS connections (website connections but also increasingly more, like WebSockets etc).
-    It helps obfuscate what domain name you are requesting.</p>
-    
-    <p>Before HTTPS, there was HTTP, and HTTP was completely unencrypted. That means
-    on its way from your machine to the server where the website you requested is hosted,
-    literally any intermediary can view what you are reading, writing, watching etc and also modify it. This was used, for example, in
-    mass government surveillance techniques as well as [Internet Service Providers injecting their own advertisements in HTTP pages](https://superuser.com/questions/902635/isp-is-inserting-ads-into-web-pages)</p>
 
-    <p>After the Snowden revelations, work was accelerated to shift everyone to HTTPS, which uses the TLS protocol to encrypt
-    HTTP connections (among other changes). This meant nobody other than the server and the client can view the page (assuming nobody has broken encryption).
-    However, in order to bootstrap an encrypted connection, we needed the domain to be in plaintext. 
-    (For a more thorough explanation why, go through [this blogpost](https://blog.cloudflare.com/encrypted-client-hello/))</p>
+    <!-- Collapsible Explanation of ECH -->
+    <button class="collapsible" onclick="toggleExplanation()">What is ECH, and why is it important?</button>
+    <div class="content" id="explanation">
+        <p>Disclaimer: some of this is simplified for brevity</p>
+        <p>ECH, short for Encrypted Client Hello, is an extension to TLS 1.3, the latest
+encryption protocol that helps secure HTTPS connections (website connections but also increasingly more, like WebSockets etc).
+It helps obfuscate what domain name you are requesting.</p>
 
-    <p>This means, for example, that before HTTPS, someone could see that you are viewing a particular YouTube video,
-    but after HTTPS, they could only view that you visited youtube.com and exchanged an awful lot of data with the server.
-    While the amount of data exposed is less, the metadata remaining is still damning. 
-    (Imagine someone seeing in logs that you visited WhatsApp, then simultaneously browsed 
-    Google and then a series of hospitals' websites, WebMD, and a banking website. Even with this 
-    little information you can take a good guess at what is happening)</p>
-    
-    <p>With ECH, this is now no longer the case. Thanks to other technologies such as DNS over HTTPS
-    (which makes sure that your DNS requests aren't being tampered with by a third party), we can now encrypt this domain name
-    and instead expose a more general domain name that usually corresponds to whatever CDN or hosting platform that website is using.
-    In other words, rather than seeing "youtube.com", the passive observer will see "generic-cdn-domain.com", so the observer can inference
-    that you are visiting a Google-hosted property, but not which one.</p>
+        <p>Before HTTPS, there was HTTP, and HTTP was completely unencrypted. That means
+        on its way from your machine to the server where the website you requested is hosted,
+        literally any intermediary can view what you are reading, writing, watching etc and also modify it. This was used, for example, in
+        mass government surveillance techniques as well as [Internet Service Providers injecting their own advertisements in HTTP pages](https://superuser.com/questions/902635/isp-is-inserting-ads-into-web-pages)</p>
 
-    <p>However, this does require that the server support ECH, and since it is a very new feature,
-    it is unlikely to be adopted very soon. However, this website is created to keep track of which websites
-    have it yet</p>
+        <p>After the Snowden revelations, work was accelerated to shift everyone to HTTPS, which uses the TLS protocol to encrypt
+        HTTP connections (among other changes). This meant nobody other than the server and the client can view the page (assuming nobody has broken encryption).
+        However, in order to bootstrap an encrypted connection, we needed the domain to be in plaintext. 
+        (For a more thorough explanation why, go through [this blogpost](https://blog.cloudflare.com/encrypted-client-hello/))</p>
+
+        <p>This means, for example, that before HTTPS, someone could see that you are viewing a particular YouTube video,
+        but after HTTPS, they could only view that you visited youtube.com and exchanged an awful lot of data with the server.
+        While the amount of data exposed is less, the metadata remaining is still damning. 
+        (Imagine someone seeing in logs that you visited WhatsApp, then simultaneously browsed 
+        Google and then a series of hospitals' websites, WebMD, and a banking website. Even with this 
+        little information you can take a good guess at what is happening)</p>
+
+        <p>With ECH, this is now no longer the case. Thanks to other technologies such as DNS over HTTPS
+        (which makes sure that your DNS requests aren't being tampered with by a third party), we can now encrypt this domain name
+        and instead expose a more general domain name that usually corresponds to whatever CDN or hosting platform that website is using.
+        In other words, rather than seeing "youtube.com", the passive observer will see "generic-cdn-domain.com", so the observer can inference
+        that you are visiting a Google-hosted property, but not which one.</p>
+
+        <p>However, this does require that the server support ECH, and since it is a very new feature,
+        it is unlikely to be adopted very soon. However, this website is created to keep track of which websites
+        have it yet</p>
+    </div>
 
     <h2>Enabling ECH today</h2>
     <ul>
@@ -107,6 +140,17 @@
     </ul>
 
     <script>
+        function toggleExplanation() {
+            const explanation = document.getElementById("explanation");
+            const collapsible = document.querySelector(".collapsible");
+            explanation.classList.toggle("active");
+            if (explanation.style.display === "block") {
+                explanation.style.display = "none";
+            } else {
+                explanation.style.display = "block";
+            }
+        }
+
         function checkDomain() {
             const domainToCheck = document.getElementById("domainInput").value;
 
@@ -175,7 +219,7 @@
                 });
         }
 
-        calculateStats();
+        calculateStats();        
     </script>
 </body>
 </html>
