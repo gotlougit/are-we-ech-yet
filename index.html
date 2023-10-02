@@ -53,11 +53,15 @@
     <p>Enter a domain name to check:</p>
     <input type="text" id="domainInput" onkeypress="handleKeyPress(event)">
     <button onclick="checkDomain()">Check</button>
+    <noscript>This won't work without JavaScript</noscript>
     <p id="result"></p>
     <p>If you want to check, the best way to do so is with this command line oneliner on *nix based operating systems</p>
     <p>dig &lt;domain-name&gt; HTTPS +short | grep ech</p>
     <p>If it finds something, then the website supports ECH. If not, it doesn't</p>
-    <script>
+
+    <h2>Stats</h2>
+    <p id="stats"></p>
+        <script>
         function checkDomain() {
             const domainToCheck = document.getElementById("domainInput").value;
 
@@ -97,6 +101,36 @@
                 checkDomain();
             }
         }
+
+        function calculateStats() {
+            // Load the "results" file
+            fetch("results")
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.split('\n');
+                    let echSupportCount = 0;
+                    let totalDomains = 0;
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line !== "") {
+                            const [_, value] = line.split(' ');
+                            if (value == 0) {
+                                echSupportCount++;
+                            }
+                            totalDomains++;
+                        }
+                    }
+
+                    const echSupportPercentage = (echSupportCount / totalDomains) * 100;
+                    document.getElementById("stats").textContent = `ECH Support Percentage: ${echSupportPercentage.toFixed(2)}%`;
+                })
+                .catch(error => {
+                    console.error("Error loading the file:", error);
+                });
+        }
+
+        calculateStats();
     </script>
 </body>
 </html>
