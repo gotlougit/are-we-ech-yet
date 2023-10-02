@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Are We ECH Yet?</title>
+</head>
+<body>
+    <h1>Are We ECH Yet?</h1>
+    <p>Enter a domain name to check:</p>
+    <input type="text" id="domainInput">
+    <button onclick="checkDomain()">Check</button>
+    <p id="result"></p>
+    <p>If you want to check, the best way to do so is with this command line oneliner on *nix based operating systems</p>
+    <p>dig <domain-name> HTTPS +short | grep ech</p>
+    <p>If it finds something, then the website supports ECH. If not, it doesn't</p>
+    <script>
+        function checkDomain() {
+            const domainToCheck = document.getElementById("domainInput").value;
+
+            // Load the "results" file
+            fetch("results")
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.split('\n');
+                    let found = false;
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line !== "") {
+                            const [domain, value] = line.split(' ');
+                            if (domain === domainToCheck) {
+                                found = true;
+                                if (value == 0) {
+                                    document.getElementById("result").textContent = `Domain ${domainToCheck} supports ECH!`;
+                                } else {
+                                    document.getElementById("result").textContent = `Domain ${domainToCheck} doesn't support ECH`;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        document.getElementById("result").textContent = `Domain ${domainToCheck} not found, we probably don't check it right now`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading the file:", error);
+                });
+        }
+    </script>
+</body>
+</html>
+
