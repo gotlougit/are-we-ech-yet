@@ -152,7 +152,7 @@ It helps obfuscate what domain name you are requesting.</p>
         }
 
         function checkDomain() {
-            const domainToCheck = document.getElementById("domainInput").value;
+            const domainToCheck = document.getElementById("domainInput").value.toLowerCase();
 
             // Load the "results" file
             fetch("results")
